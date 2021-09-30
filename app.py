@@ -14,8 +14,14 @@ app = App(token=SLACK_BOT_TOKEN)
 
 @app.message("hello")
 def message_hello(message, say):
+    print("COOL")
     say(f"Hey there <@{message['user']}>!")
 
+
+@app.command("/connect")
+def connect(ack, say, command):
+    ack()
+    say("connecting...")
 
 
 if __name__ == "__main__":
