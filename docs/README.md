@@ -94,9 +94,14 @@ $ python -m pip install -r requirements.txt
 
 **Run app**
 
+<div class="termy">
+
 ```console
 $ python .\app.py
 
----> 100%
-INFO:slack_bolt.App:A new session has been established (session id: b60c4657-85f0-4632-9306-efaea1bb7438)
+DEBUG:slack_bolt.App:Sending a request 
+INFO:slack_bolt.App:A new session has been established (session id: 123456)
+INFO:slack_bolt.App:Bolt app is running!
 ```
+
+</div>
