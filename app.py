@@ -41,12 +41,11 @@ def message_hello(message, say):
     say(f"Hey there <@{message['user']}>!")
 
 
-@app.command("/connect")
-def connect(ack, say, command):
+@app.command("/lil-connect")
+def connect(ack, client, say, command):
     ack()
-    connectCommand = ConnectCommand()
-    logging.debug("connect command triggered")
-    say(connectCommand.get_command_response())
+    connectCommand = ConnectCommand(client, say)
+    connectCommand = connectCommand.do_command()
 
 @app.event("message")
 def handle_message_events(body, logger):
