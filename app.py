@@ -1,4 +1,7 @@
 import os
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 from dotenv import load_dotenv
 from slack_bolt import App

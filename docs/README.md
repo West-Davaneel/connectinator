@@ -89,3 +89,14 @@ $ python -m pip install -r requirements.txt
 ```
 
 </div>
+
+
+
+**Run app**
+
+```console
+$ python .\app.py
+
+---> 100%
+INFO:slack_bolt.App:A new session has been established (session id: b60c4657-85f0-4632-9306-efaea1bb7438)
+```
