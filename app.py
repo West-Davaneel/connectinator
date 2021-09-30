@@ -26,11 +26,14 @@ if memberRequest['ok']:
     while randomMember['is_bot'] == True:
         randomMember = random.choice(list(memberRequest['members']))
     print(randomMember['name'])
-    # for member in memberRequest['members']:
-    #     print(member)
-        
- 
-        
+
+
+@app.event("reaction_added")
+def track_question_level(event, say):
+    print(event)
+    print("Reaction detected")
+    say(event)
+
 
 @app.message("hello")
 def message_hello(message, say):
@@ -45,6 +48,9 @@ def connect(ack, say, command):
     logging.debug("connect command triggered")
     say(connectCommand.get_command_response())
 
+@app.event("message")
+def handle_message_events(body, logger):
+    logger.info(body)
 
 if __name__ == "__main__":
     SocketModeHandler(app, SLACK_APP_TOKEN).start()
