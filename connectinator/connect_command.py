@@ -3,4 +3,4 @@ class ConnectCommand:
         pass
 
     def get_command_response(self):
-        return "sup"
+        return "test"
