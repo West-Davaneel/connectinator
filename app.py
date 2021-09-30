@@ -22,6 +22,12 @@ if request['ok']:
         print(item['name'])
 
 
+@app.event("reaction_added")
+def track_reactions(event, say):
+    print(event)
+    print("this got called")
+
+
 @app.message("hello")
 def message_hello(message, say):
     print("COOL")
