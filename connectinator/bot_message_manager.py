@@ -25,12 +25,12 @@ class BotMessageManager:
                 self.bot_messages = list()
 
     def add_message(self, ts, channel):
-        self.bot_messages.append({"ts": ts, "channel": channel})
+        new_message = {"ts": ts, "channel": channel}
+        self.bot_messages.append(new_message)
         with open(self.bot_messages_file, 'a', newline='') as file:
             writer = csv.DictWriter(file, fieldnames=self.field_names)
 
-            for message in self.bot_messages:
-                writer.writerow(message)
+            writer.writerow(new_message)
 
     def is_connect_command_message(self, ts, channel):
         message = {"ts": ts, "channel": channel}
