@@ -50,3 +50,5 @@ class ConnectCommand:
     def do_command(self):
         response = self.ask_for_question_type()
         self.add_question_options_as_reactions(response)
+
+        return response

@@ -17,6 +17,7 @@ from connectinator.constants import (
 )
 from connectinator.connect_command import ConnectCommand
 from connectinator.reply import Reply
+from connectinator.bot_message_manager import BotMessageManager
 from connectinator.utils import (
     get_nathan_and_nick,
     get_random_member_id,
@@ -32,7 +33,7 @@ SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
 
 app = App(token=SLACK_BOT_TOKEN)
 
-
+bot_message_mananger = BotMessageManager()
 
 def create_dm_with_user_and_random_user(client, event, say, text):
 
@@ -52,24 +53,29 @@ def create_dm_with_user_and_random_user(client, event, say, text):
 
 @app.event("reaction_added")
 def track_question_level(client, event, say):
-    questionBank = open('QUESTION_BANK.json', mode='r', encoding='utf-8-sig')
-    question_bank = json.load(questionBank)
-    questionBank.close()
 
-    questions_by_level_dict = defaultdict(list)
-    for question in question_bank:
-        questions_by_level_dict[question['QUESTION_TYPE']].append(question)
+    channel = event.get('item').get('channel')
+    ts = event.get('item').get('ts')
 
-    logging.info(f"event = {event}")
+    if bot_message_mananger.is_connect_command_message(ts, channel):
+        questionBank = open('QUESTION_BANK.json', mode='r', encoding='utf-8-sig')
+        question_bank = json.load(questionBank)
+        questionBank.close()
 
-    try:
-        question_type = EMOJIS_QUESTION_TYPE_DICT[event['reaction']]
-        question = random.choice(questions_by_level_dict[question_type])['QUESTION_BODY']
-        
-        create_dm_with_user_and_random_user(client, event, say, question)
+        questions_by_level_dict = defaultdict(list)
+        for question in question_bank:
+            questions_by_level_dict[question['QUESTION_TYPE']].append(question)
 
-    except KeyError:
-        pass
+        logging.info(f"event = {event}")
+
+        try:
+            question_type = EMOJIS_QUESTION_TYPE_DICT[event['reaction']]
+            question = random.choice(questions_by_level_dict[question_type])['QUESTION_BODY']
+            
+            create_dm_with_user_and_random_user(client, event, say, question)
+
+        except KeyError:
+            pass
 
 
 
@@ -77,7 +83,9 @@ def track_question_level(client, event, say):
 def connect(ack, client, say, command):
     ack()
     connectCommand = ConnectCommand(client, say)
-    connectCommand = connectCommand.do_command()
+    response = connectCommand = connectCommand.do_command()
+
+    bot_message_mananger.add_message(response.get('ts'), response.get('channel'))
 
 
 @app.event("app_mention")
