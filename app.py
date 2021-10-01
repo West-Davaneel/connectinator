@@ -16,6 +16,7 @@ from connectinator.constants import (
     EMOJIS_QUESTION_TYPE_DICT,
 )
 from connectinator.connect_command import ConnectCommand
+from connectinator.reply import Reply
 from connectinator.utils import (
     get_nathan_and_nick,
     get_random_member_id,
@@ -30,21 +31,6 @@ SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
 
 app = App(token=SLACK_BOT_TOKEN)
-
-def create_dm_with_user_and_random_user_old(client, message, say, text):
-
-    say(f"Check your DMs -- I'm connecting you with a random workmate <@{message['user']}>!")
-    
-    sender_id = message['user']
-    users = [
-        get_random_member_id(client, [sender_id]),
-        sender_id,
-    ]
-    createDm = CreateDm(client, users)
-
-    logging.info(f"Created Channel, ID = {createDm.get_channel_id()}")
-
-    say(text, channel = createDm.get_channel_id())
 
 
 
@@ -86,11 +72,6 @@ def track_question_level(client, event, say):
         pass
 
 
-@app.message("hello")
-def message_hello(client, message, say):
-    
-    create_dm_with_user_and_random_user(client, message, say, "hellooo")
-
 
 @app.command("/lil-connect")
 def connect(ack, client, say, command):
@@ -98,10 +79,12 @@ def connect(ack, client, say, command):
     connectCommand = ConnectCommand(client, say)
     connectCommand = connectCommand.do_command()
 
-@app.event("message")
-def handle_message_events(body, logger):
-    logger.info(body)
 
+@app.event("app_mention")
+def on_mention(event, client, say):
+    mentioner_user_id = event['user']
+    reply = Reply(mentioner_user_id, say)
+    reply.reply()
 
 if __name__ == "__main__":
     SocketModeHandler(app, SLACK_APP_TOKEN).start()
