@@ -2,6 +2,7 @@ import os
 import logging
 import random 
 import json
+from collections import defaultdict
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -30,22 +31,22 @@ if memberRequest['ok']:
 @app.event("reaction_added")
 def track_question_level(event, say):
     questionBank = open('QUESTION_BANK.json', mode='r', encoding='utf-8-sig')
-    questionBankDict = json.load(questionBank)
-    print("Reaction detected -----------------")
-    question = random.choice(list(questionBankDict))
-    if event['reaction'] == 'relaxed':
-        # Choose question with type 0, level 0
-        while question['QUESTION_TYPE'] != '0' and question['LEVEL'] != '0':
-            question = random.choice(list(questionBankDict))
-        # Send question body
-    elif event['reaction'] == 'hugging_face':
-        # Choose question with type 0, level 1
-        while question['QUESTION_TYPE'] != '0' and question['LEVEL'] != '1':
-            question = random.choice(list(questionBankDict))
-        # Send question body
-    print(question)
+    question_bank = json.load(questionBank)
     questionBank.close()
-    say(event)
+
+    questions_by_level_dict = defaultdict(list)
+    for question in question_bank:
+        questions_by_level_dict[question['QUESTION_TYPE']].append(question)
+
+    logging.info(f"event = {event}")
+
+    question = "invalid"
+
+    if event['reaction'] == 'relaxed':
+        question = random.choice(questions_by_level_dict[0])['QUESTION_BODY']
+
+    
+    say(text=question, channel = event['item']['channel'])
 
 
 @app.message("hello")
