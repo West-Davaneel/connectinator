@@ -13,11 +13,13 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 from connectinator.constants import (
     QUESTIONS_TYPE_EMOJIS_DICT, 
     QUESTIONS_TYPE_NAMES_DICT,
+    EMOJIS_QUESTION_TYPE_DICT,
 )
 from connectinator.connect_command import ConnectCommand
 from connectinator.utils import (
     get_nathan_and_nick,
     get_random_member_id,
+
 )
 from connectinator.create_dm import CreateDm
 
@@ -29,9 +31,41 @@ SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
 
 app = App(token=SLACK_BOT_TOKEN)
 
+def create_dm_with_user_and_random_user_old(client, message, say, text):
+
+    say(f"Check your DMs -- I'm connecting you with a random workmate <@{message['user']}>!")
+    
+    sender_id = message['user']
+    users = [
+        get_random_member_id(client, [sender_id]),
+        sender_id,
+    ]
+    createDm = CreateDm(client, users)
+
+    logging.info(f"Created Channel, ID = {createDm.get_channel_id()}")
+
+    say(text, channel = createDm.get_channel_id())
+
+
+
+def create_dm_with_user_and_random_user(client, event, say, text):
+
+    say(f"Check your DMs -- I'm connecting you with a random workmate <@{event['user']}>!")
+    
+    sender_id = event['user']
+    users = [
+        get_random_member_id(client, [sender_id]),
+        sender_id,
+    ]
+    createDm = CreateDm(client, users)
+
+    logging.info(f"Created Channel, ID = {createDm.get_channel_id()}")
+
+    say(text, channel = createDm.get_channel_id())
+
 
 @app.event("reaction_added")
-def track_question_level(event, say):
+def track_question_level(client, event, say):
     questionBank = open('QUESTION_BANK.json', mode='r', encoding='utf-8-sig')
     question_bank = json.load(questionBank)
     questionBank.close()
@@ -42,36 +76,23 @@ def track_question_level(event, say):
 
     logging.info(f"event = {event}")
 
-    question = "Invalid reaction. Try again!"
+    try:
+        question_type = EMOJIS_QUESTION_TYPE_DICT[event['reaction']]
+        question = random.choice(questions_by_level_dict[question_type])['QUESTION_BODY']
+        
+        create_dm_with_user_and_random_user(client, event, say, question)
 
-    if event['reaction'] == QUESTIONS_TYPE_EMOJIS_DICT[1]:
-        question = random.choice(questions_by_level_dict[1])['QUESTION_BODY']
-    elif event['reaction'] == QUESTIONS_TYPE_EMOJIS_DICT[2]:
-        question = random.choice(questions_by_level_dict[2])['QUESTION_BODY']
-    elif event['reaction'] == QUESTIONS_TYPE_EMOJIS_DICT[0]:
-        question = random.choice(questions_by_level_dict[0])['QUESTION_BODY']
-    
-    say(text=question, channel = event['item']['channel'])
+    except KeyError:
+        pass
 
 
 @app.message("hello")
-def message_hello(message, say):
+def message_hello(client, message, say):
     
-    say(f"Check your DMs -- I'm connecting you with a random workmate <@{message['user']}>!")
-    
-    sender_id = message['user']
-    users = [
-        get_random_member_id(app.client, [sender_id]),
-        sender_id,
-    ]
-    createDm = CreateDm(app.client, users)
-
-    logging.info(f"Created Channel, ID = {createDm.get_channel_id()}")
-
-    say("READY TO CONNECT?!??!?!?!??!?!?!?!?!?!??!", channel = createDm.get_channel_id())
+    create_dm_with_user_and_random_user(client, message, say, "hellooo")
 
 
-@app.command("/connect")
+@app.command("/lil-connect")
 def connect(ack, client, say, command):
     ack()
     connectCommand = ConnectCommand(client, say)
