@@ -10,7 +10,7 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 
 from connectinator.connect_command import ConnectCommand
 
-from slackclient import SlackClient
+
 
 load_dotenv()
 
@@ -19,13 +19,13 @@ SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
 
 app = App(token=SLACK_BOT_TOKEN)
 
-client = SlackClient(SLACK_BOT_TOKEN)
-memberRequest = client.api_call("users.list")
+
+memberRequest = app.client.users_list()
 if memberRequest['ok']:
     randomMember = random.choice(list(memberRequest['members']))
     while randomMember['is_bot'] == True:
         randomMember = random.choice(list(memberRequest['members']))
-    print(randomMember['name'])
+    logging.debug(f"random member = {randomMember['name']}")
 
 
 @app.event("reaction_added")

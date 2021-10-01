@@ -1,20 +1,16 @@
 import logging
 
 from slack_bolt.logger import messages
+from .constants import (
+    QUESTIONS_TYPE_EMOJIS_DICT, 
+    QUESTIONS_TYPE_NAMES_DICT,
+)
 
 class ConnectCommand:
 
-    question_type_names_dict = {
-        0: "A Compliment (not a question)", 
-        1: "Shallow",
-        2: "Deep"
-    }
+    question_type_names_dict = QUESTIONS_TYPE_NAMES_DICT
 
-    question_type_emojis_dict = {
-        0: "heart_eyes",
-        1: "relaxed",
-        2: "hugging_face"
-    }
+    question_type_emojis_dict = QUESTIONS_TYPE_EMOJIS_DICT
 
 
 
