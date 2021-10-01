@@ -41,6 +41,8 @@ def message_hello(message, say):
 
     logging.info(f"Created Channel, ID = {createDm.get_channel_id()}")
 
+    say("suuppp", channel = createDm.get_channel_id())
+
 
 
 
