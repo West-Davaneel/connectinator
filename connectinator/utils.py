@@ -23,7 +23,7 @@ def get_random_member_id(client, exclude_users: list = None):
 def is_valid_user(user, exclude_users: list = None): 
 
     return not user['is_bot'] and \
-        user['id'] != 'USSLACKBOT' and \
+        user['id'] != 'USLACKBOT' and \
         user['id'] not in exclude_users
 
         
