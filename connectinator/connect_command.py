@@ -20,7 +20,7 @@ class ConnectCommand:
 
 
     def ask_for_question_type(self):
-        question_types_string = "What kind of question do you want? React with your response"
+        question_types_string = "What kind of question would you like? React with your response:"
        
         for question_type in self.question_type_names_dict:
             emoji = self.question_type_emojis_dict[question_type]
