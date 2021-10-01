@@ -1,16 +1,36 @@
 site_name: Connectinator
 
+repo_url: https://github.com/West-Davaneel/connectinator
+repo_name: West-Davaneel/connectinator
 
 theme:
   name: material
+  favicon: images/connecticator-logo.svg
+  logo: images/connecticator-logo.svg
+  icon: 
+    repo: fontawesome/brands/github-square
+
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+  
+  
 
 markdown_extensions:
   - admonition
   - pymdownx.tabbed
   - pymdownx.superfences
   - pymdownx.details
-  - pymdownx.snippets:
-      base_path: docs/
+  - pymdownx.snippets
 
 
 copyright: Copyright &copy; 2021 West Davaneel

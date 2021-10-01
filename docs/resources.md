@@ -3,7 +3,9 @@
 
 Paste em here 
 
-[Main Docs Site](https://slack.dev/python-slack-sdk/)
+[Bolt Python Docs](https://slack.dev/bolt-python/tutorial/getting-started)
+
+[Slack SDK Docs](https://slack.dev/python-slack-sdk/)
 
 [Tutorials for Slack in python](https://api.slack.com/tutorials/tags/python/)
 
