@@ -1,5 +1,5 @@
 QUESTIONS_TYPE_NAMES_DICT = {
-    0: "A Compliment (not a question)", 
+    0: "Send a compliment instead!", 
     1: "Easy ice-breaker!",
     2: "A little more personal..."
 }

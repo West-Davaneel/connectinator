@@ -33,11 +33,13 @@ SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
 
 app = App(token=SLACK_BOT_TOKEN)
 
+
 bot_message_mananger = BotMessageManager()
+
 
 def create_dm_with_user_and_random_user(client, event, say, text):
 
-    say(f"Check your DMs -- I'm connecting you with a random workmate <@{event['user']}>!")
+    say(f"Check your DMs -- I'm connecting you with a random workmate, <@{event['user']}>!")
     
     sender_id = event['user']
     users = [
@@ -79,7 +81,7 @@ def track_question_level(client, event, say):
 
 
 
-@app.command("/lil-connect")
+@app.command("/connect")
 def connect(ack, client, say, command):
     ack()
     connectCommand = ConnectCommand(client, say)
