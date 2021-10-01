@@ -4,7 +4,7 @@ import random
 import json
 from collections import defaultdict
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 from dotenv import load_dotenv
 from slack_bolt import App
@@ -48,7 +48,7 @@ def create_dm_with_user_and_random_user(client, event, say, text):
     ]
     createDm = CreateDm(client, users)
 
-    logging.info(f"Created Channel, ID = {createDm.get_channel_id()}")
+    logging.debug(f"Created Channel, ID = {createDm.get_channel_id()}")
 
     say(text, channel = createDm.get_channel_id())
 
@@ -68,7 +68,7 @@ def track_question_level(client, event, say):
         for question in question_bank:
             questions_by_level_dict[question['QUESTION_TYPE']].append(question)
 
-        logging.info(f"event = {event}")
+        logging.debug(f"event = {event}")
 
         try:
             question_type = EMOJIS_QUESTION_TYPE_DICT[event['reaction']]
