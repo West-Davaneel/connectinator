@@ -14,8 +14,6 @@ class ConnectCommand:
 
 
 
-
-
     def __init__(self, client, say):
         self.say = say 
         self.client = client
