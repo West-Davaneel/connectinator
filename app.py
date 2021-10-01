@@ -6,6 +6,11 @@ from collections import defaultdict
 
 logging.basicConfig(level=logging.DEBUG)
 
+from connectinator.constants import (
+    QUESTIONS_TYPE_EMOJIS_DICT, 
+    QUESTIONS_TYPE_NAMES_DICT,
+)
+
 from dotenv import load_dotenv
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
@@ -40,11 +45,14 @@ def track_question_level(event, say):
 
     logging.info(f"event = {event}")
 
-    question = "invalid"
+    question = "Invalid reaction. Try again!"
 
-    if event['reaction'] == 'relaxed':
+    if event['reaction'] == QUESTIONS_TYPE_EMOJIS_DICT[1]:
+        question = random.choice(questions_by_level_dict[1])['QUESTION_BODY']
+    elif event['reaction'] == QUESTIONS_TYPE_EMOJIS_DICT[2]:
+        question = random.choice(questions_by_level_dict[2])['QUESTION_BODY']
+    elif event['reaction'] == QUESTIONS_TYPE_EMOJIS_DICT[0]:
         question = random.choice(questions_by_level_dict[0])['QUESTION_BODY']
-
     
     say(text=question, channel = event['item']['channel'])
 
@@ -55,7 +63,7 @@ def message_hello(message, say):
     say(f"Hey there <@{message['user']}>!")
 
 
-@app.command("/lil-connect")
+@app.command("/connect")
 def connect(ack, client, say, command):
     ack()
     connectCommand = ConnectCommand(client, say)
