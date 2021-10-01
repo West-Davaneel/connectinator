@@ -8,11 +8,8 @@ logging.basicConfig(level=logging.DEBUG)
 from dotenv import load_dotenv
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
-from collections import defaultdict
 
 from connectinator.connect_command import ConnectCommand
-
-
 
 load_dotenv()
 
@@ -30,31 +27,23 @@ if memberRequest['ok']:
     # logging.debug(f"random member = {randomMember['name']}")
 
 
-
-
-
 @app.event("reaction_added")
 def track_question_level(event, say):
     questionBank = open('QUESTION_BANK.json', mode='r', encoding='utf-8-sig')
     questionBankDict = json.load(questionBank)
-    questions_by_type_dict = defaultdict(list)
-    for quesiton in questionBankDict:
-        questions_by_type_dict[questionBankDict[0]].append(quesiton)
-
-    print(questions_by_type_dict)
     print("Reaction detected -----------------")
-    # question = random.choice(list(questionBankDict))
-    # if event['reaction'] == 'relaxed':
-    #     # Choose question with type 0, level 0
-    #     while question['QUESTION_TYPE'] != 0 and question['LEVEL'] != 0:
-    #         question = random.choice(list(questionBankDict))
-    #     # Send question body
-    # elif event['reaction'] == 'hugging_face':
-    #     # Choose question with type 0, level 1
-    #     while question['QUESTION_TYPE'] != 0 and question['LEVEL'] != 1:
-    #         question = random.choice(list(questionBankDict))
+    question = random.choice(list(questionBankDict))
+    if event['reaction'] == 'relaxed':
+        # Choose question with type 0, level 0
+        while question['QUESTION_TYPE'] != '0' and question['LEVEL'] != '0':
+            question = random.choice(list(questionBankDict))
         # Send question body
-    # print(question)
+    elif event['reaction'] == 'hugging_face':
+        # Choose question with type 0, level 1
+        while question['QUESTION_TYPE'] != '0' and question['LEVEL'] != '1':
+            question = random.choice(list(questionBankDict))
+        # Send question body
+    print(question)
     questionBank.close()
     say(event)
 
