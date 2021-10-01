@@ -1,13 +1,21 @@
 QUESTIONS_TYPE_NAMES_DICT = {
     0: "A Compliment (not a question)", 
-    1: "Shallow",
-    2: "Deep"
+    1: "Easy ice-breaker!",
+    2: "A little more personal..."
 }
 
 QUESTIONS_TYPE_EMOJIS_DICT = {
-    0: "heart_eyes",
+    0: "tada",
     1: "relaxed",
-    2: "hugging_face"
+    2: "heart"
 }
+
+
+EMOJIS_QUESTION_TYPE_DICT = {
+    "tada": 0,
+    "relaxed": 1,
+    "heart": 2,
+}
+
 
 
