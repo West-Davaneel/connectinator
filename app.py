@@ -9,7 +9,8 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 
 from connectinator.connect_command import ConnectCommand
 from connectinator.utils import (
-    get_nathan_and_nick
+    get_nathan_and_nick,
+    get_random_member_id,
 )
 from connectinator.create_dm import CreateDm
 
@@ -35,13 +36,20 @@ def track_question_level(event, say):
 @app.message("hello")
 def message_hello(message, say):
     
-    say(f"Hey there <@{message['user']}>!")
-    nathan_and_nick = get_nathan_and_nick(app.client)
-    createDm = CreateDm(app.client, list(nathan_and_nick))
+    say(f"Check your DMs -- I'm connecting you with a random workmate <@{message['user']}>!")
+
+    sender_id = message['user']
+
+    users = [
+        get_random_member_id(app.client, [sender_id]),
+        sender_id,
+    ]
+
+    createDm = CreateDm(app.client, users)
 
     logging.info(f"Created Channel, ID = {createDm.get_channel_id()}")
 
-    say("suuppp", channel = createDm.get_channel_id())
+    say("READY TO CONNECT?!??!?!?!??!?!?!?!?!?!??!", channel = createDm.get_channel_id())
 
 
 
