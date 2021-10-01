@@ -27,7 +27,8 @@ def is_valid_user(user, exclude_users: list = None):
         user['id'] not in exclude_users
 
         
-
+def is_valid_reaction(event):
+    pass
 
 
 def get_nathan_and_nick(client):

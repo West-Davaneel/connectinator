@@ -16,6 +16,8 @@ from connectinator.constants import (
     EMOJIS_QUESTION_TYPE_DICT,
 )
 from connectinator.connect_command import ConnectCommand
+from connectinator.reply import Reply
+from connectinator.bot_message_manager import BotMessageManager
 from connectinator.utils import (
     get_nathan_and_nick,
     get_random_member_id,
@@ -31,21 +33,8 @@ SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
 
 app = App(token=SLACK_BOT_TOKEN)
 
-def create_dm_with_user_and_random_user_old(client, message, say, text):
 
-    say(f"Check your DMs -- I'm connecting you with a random workmate, <@{message['user']}>!")
-    
-    sender_id = message['user']
-    users = [
-        get_random_member_id(client, [sender_id]),
-        sender_id,
-    ]
-    createDm = CreateDm(client, users)
-
-    logging.info(f"Created Channel, ID = {createDm.get_channel_id()}")
-
-    say(text, channel = createDm.get_channel_id())
-
+bot_message_mananger = BotMessageManager()
 
 
 def create_dm_with_user_and_random_user(client, event, say, text):
@@ -66,42 +55,46 @@ def create_dm_with_user_and_random_user(client, event, say, text):
 
 @app.event("reaction_added")
 def track_question_level(client, event, say):
-    questionBank = open('QUESTION_BANK.json', mode='r', encoding='utf-8-sig')
-    question_bank = json.load(questionBank)
-    questionBank.close()
 
-    questions_by_level_dict = defaultdict(list)
-    for question in question_bank:
-        questions_by_level_dict[question['QUESTION_TYPE']].append(question)
+    channel = event.get('item').get('channel')
+    ts = event.get('item').get('ts')
 
-    logging.info(f"event = {event}")
+    if bot_message_mananger.is_connect_command_message(ts, channel):
+        questionBank = open('QUESTION_BANK.json', mode='r', encoding='utf-8-sig')
+        question_bank = json.load(questionBank)
+        questionBank.close()
 
-    try:
-        question_type = EMOJIS_QUESTION_TYPE_DICT[event['reaction']]
-        question = random.choice(questions_by_level_dict[question_type])['QUESTION_BODY']
-        
-        create_dm_with_user_and_random_user(client, event, say, question)
+        questions_by_level_dict = defaultdict(list)
+        for question in question_bank:
+            questions_by_level_dict[question['QUESTION_TYPE']].append(question)
 
-    except KeyError:
-        pass
+        logging.info(f"event = {event}")
 
+        try:
+            question_type = EMOJIS_QUESTION_TYPE_DICT[event['reaction']]
+            question = random.choice(questions_by_level_dict[question_type])['QUESTION_BODY']
+            
+            create_dm_with_user_and_random_user(client, event, say, question)
 
-@app.message("hello")
-def message_hello(client, message, say):
-    
-    create_dm_with_user_and_random_user(client, message, say, "hellooo")
+        except KeyError:
+            pass
+
 
 
 @app.command("/connect")
 def connect(ack, client, say, command):
     ack()
     connectCommand = ConnectCommand(client, say)
-    connectCommand = connectCommand.do_command()
+    response = connectCommand = connectCommand.do_command()
 
-@app.event("message")
-def handle_message_events(body, logger):
-    logger.info(body)
+    bot_message_mananger.add_message(response.get('ts'), response.get('channel'))
 
+
+@app.event("app_mention")
+def on_mention(event, client, say):
+    mentioner_user_id = event['user']
+    reply = Reply(mentioner_user_id, say)
+    reply.reply()
 
 if __name__ == "__main__":
     SocketModeHandler(app, SLACK_APP_TOKEN).start()
