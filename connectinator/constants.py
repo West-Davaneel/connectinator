@@ -11,3 +11,11 @@ QUESTIONS_TYPE_EMOJIS_DICT = {
 }
 
 
+EMOJIS_QUESTION_TYPE_DICT = {
+    "heart_eyes": 0,
+    "relaxed": 1,
+    "hugging_face": 2,
+}
+
+
+
