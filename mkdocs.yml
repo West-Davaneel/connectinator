@@ -5,8 +5,8 @@ repo_name: West-Davaneel/connectinator
 
 theme:
   name: material
-  favicon: images/connecticator-logo.svg
-  logo: images/connecticator-logo.svg
+  favicon: images/connectinator-logo.svg
+  logo: images/connectinator-logo.svg
   icon: 
     repo: fontawesome/brands/github-square
 
